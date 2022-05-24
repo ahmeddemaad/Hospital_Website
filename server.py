@@ -1,4 +1,5 @@
 from flask import Flask, redirect, render_template,request,session,url_for
+from pymysql import NULL
 
 print('started')
 
@@ -31,7 +32,7 @@ def login():
         if record:
             session['user'] = userEmail
             session['loggedIn'] = True
-            return render_template('base.html')
+            return redirect(url_for('base'))
         else:
             print(111111)
             return render_template('login.html',msg = True)
@@ -64,20 +65,33 @@ def logout():
     return redirect(url_for('base'))
 
 
+
 @app.route('/adddoctor',methods = ['POST','GET'])
 def adddoctor():
+    
     if request.method == 'POST':
+
         name = request.form['name1']
-        dep = request.form['dep1']
-        sql = "INSERT INTo DOCTOR (name,department) VALUES (%s,%s)"
-        val = (name,dep)
+        # id = request.form['id']
+        ssn=request.form['ssn']
+        sex = request.form['sex']
+        email = request.form['email']
+        password = request.form['password']
+        address = request.form['address']
+        birth_date = request.form['birth_date']
+        degree = request.form['degree']
+        Specialization= request.form['specialization']
+        salary = request.form['salary']
+
+
+        sql = """INSERT INTO doctor (name,ssn,sex,email,password,address,birth_date,degree,specialization,salary) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+        val = (name,ssn,sex,email,password,address,birth_date,degree,Specialization,salary)
         mycursor.execute(sql,val)
         mydb.commit()
-        return render_template('index.html')
+        return redirect(url_for('doctors'))
     else:
         print('get')
         return render_template('adddoctor.html')
-
 
 @app.route('/viewdoctor')
 def viewdoctor():
@@ -88,11 +102,12 @@ def viewdoctor():
 
 @app.route('/services')
 def services():
-    return("flask")
+    return render_template('services.html')
 
 @app.route('/doctors')
 def doctors():
-    return("doctors")        
+    return render_template('doctor.html')
+           
 
 if __name__ == '__main__':
     app.run(debug = True)

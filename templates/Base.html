@@ -15,13 +15,13 @@
   <div>
     <nav class="topnav">
       {% if session['user'] %}
-        <a class="loginButton" href="http://127.0.0.1:5000/logout">log-out</a>
+        <a class="loginButton" href="http://127.0.0.1:5000/logout">Log Out</a>
         <img src=" {{url_for('static',filename='assets/hospital.png')}}" class="titleicon" />
       <label class="title">NEW<br />HOSPITAL</label>
       <ul style="float: right">
         <li class="li_items"> <a class="navitems" href="#">Home</a></li>
         <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/services">Services</a></li>
-        <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/doctors">doctors</a></li>
+        <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/doctors">Doctors</a></li>
         <li class="li_items"> <a class="navitems" href="#">Patients</a></li>
         <li class="li_items"> <a class="navitems" href="#">About Us</a></li>
         <li class="li_items"> <a class="navitems" href="#">Book Now</a></li>
@@ -36,13 +36,13 @@
       <ul style="float: right">
         <li class="li_items"> <a class="navitems" href="#">Home</a></li>
         <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/login">Services</a></li>
-        <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/login">doctors</a></li>
+        <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/login">Doctors</a></li>
         <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/login">Patients</a></li>
         <li class="li_items"> <a class="navitems" href="#">About Us</a></li>
         <li class="li_items"> <a class="navitems" href="http://127.0.0.1:5000/login">Book Now</a></li>
       </ul>
-      {%endif%}
 
+      {%endif%}
       <hr />
     </nav>
 

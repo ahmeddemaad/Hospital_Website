@@ -18,8 +18,16 @@ mycursor = mydb.cursor()
 
 @app.route('/')
 def base():
-   print('base')
-   return render_template('Base.html')
+   print('')
+   return render_template('startPage.html')
+
+@app.route('/homePage')
+def homePage():
+   return render_template('homePage.html')
+
+@app.route('/preSignUp')
+def preSignUp():
+   return render_template('preSignUp.html')
 
 @app.route('/login',methods=["GET","POST"])
 def login():
@@ -32,7 +40,7 @@ def login():
         if record:
             session['user'] = userEmail
             session['loggedIn'] = True
-            return redirect(url_for('base'))
+            return redirect(url_for('homePage'))
         else:
             print(111111)
             return render_template('login.html',msg = True)
@@ -72,7 +80,6 @@ def adddoctor():
     if request.method == 'POST':
 
         name = request.form['name1']
-        # id = request.form['id']
         ssn=request.form['ssn']
         sex = request.form['sex']
         email = request.form['email']
@@ -82,13 +89,11 @@ def adddoctor():
         degree = request.form['degree']
         Specialization= request.form['specialization']
         salary = request.form['salary']
-
-
         sql = """INSERT INTO doctor (name,ssn,sex,email,password,address,birth_date,degree,specialization,salary) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
         val = (name,ssn,sex,email,password,address,birth_date,degree,Specialization,salary)
         mycursor.execute(sql,val)
         mydb.commit()
-        return redirect(url_for('doctors'))
+        return redirect(url_for('homePage'))
     else:
         print('get')
         return render_template('adddoctor.html')
@@ -108,6 +113,5 @@ def services():
 def doctors():
     return render_template('doctor.html')
            
-
 if __name__ == '__main__':
     app.run(debug = True)

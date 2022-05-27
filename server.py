@@ -1,11 +1,17 @@
+import email
+from genericpath import exists
+from unittest import result
 from flask import Flask, redirect, render_template,request,session,url_for
 from pymysql import NULL
+from sqlalchemy import false
+from flask_mysqldb import MySQL
+import mysql.connector
+import re
 
 print('started')
 
 app = Flask(__name__)
 app.secret_key = "very secret key"
-import mysql.connector
 
 mydb = mysql.connector.connect(
   host="localhost",
@@ -76,9 +82,10 @@ def logout():
 
 @app.route('/adddoctor',methods = ['POST','GET'])
 def adddoctor():
-    
+
     if request.method == 'POST':
 
+        #requesting data form
         name = request.form['name1']
         ssn=request.form['ssn']
         sex = request.form['sex']
@@ -89,14 +96,36 @@ def adddoctor():
         degree = request.form['degree']
         Specialization= request.form['specialization']
         salary = request.form['salary']
-        sql = """INSERT INTO doctor (name,ssn,sex,email,password,address,birth_date,degree,specialization,salary) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
-        val = (name,ssn,sex,email,password,address,birth_date,degree,Specialization,salary)
-        mycursor.execute(sql,val)
-        mydb.commit()
-        return redirect(url_for('homePage'))
+
+        #setting a Dictcurstor inorder => to accept one value in the input
+
+        emailCursor =mydb.cursor(buffered=True)
+        emailCursor.execute(""" SELECT * FROM doctor WHERE email = %s """ , (email,))
+        emailExist = emailCursor.fetchone()
+
+        ssnCursor =mydb.cursor(buffered=True)
+        ssnCursor.execute(""" SELECT * FROM doctor WHERE ssn = %s """ , (ssn,))
+        ssnExist = ssnCursor.fetchone()
+
+        if emailExist and ssnExist :
+            return render_template('adddoctor.html', emailExisits = True , ssnExisits=True)
+        elif emailExist or ssnExist :
+            if emailExist :
+                return render_template('adddoctor.html', emailExisits = True , ssnExisits=False)
+            else:
+                return render_template('adddoctor.html', emailExisits = False , ssnExisits=True)        
+        elif not re.match(r'[^@]+@[^@]+\.[^@]+', email):
+            return render_template('adddoctor.html', emailExisits = False , emailInvalid=True )        
+        else:    
+         sql = """INSERT INTO doctor (name,ssn,sex,email,password,address,birth_date,degree,specialization,salary) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)"""
+         val = (name,ssn,sex,email,password,address,birth_date,degree,Specialization,salary)
+         mycursor.execute(sql,val)
+         mydb.commit()
+         return redirect(url_for('homePage'))
     else:
         print('get')
         return render_template('adddoctor.html')
+        mycursor.close()
 
 @app.route('/viewdoctor')
 def viewdoctor():
@@ -112,6 +141,16 @@ def services():
 @app.route('/doctors')
 def doctors():
     return render_template('doctor.html')
+
+@app.route('/homePage/profile')
+def profile():
+    if 'loggedIn' in session:
+        cursor = mydb.cursor(buffered=True)
+        cursor.execute('SELECT * FROM USERS WHERE email = %s', ( session['user'],))
+        result = cursor.fetchall()
+        
+        return render_template('profile.html', data = result)
+    return redirect(url_for('homePage'))    
            
 if __name__ == '__main__':
     app.run(debug = True)

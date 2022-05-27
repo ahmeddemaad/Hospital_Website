@@ -1,4 +1,18 @@
-
+{% if emailExisits %}
+<div class="alert alert-warning" role="alert">
+  the email you entered already exisits
+</div>
+{%endif%}
+{% if emailInvalid %}
+<div class="alert alert-warning" role="alert">
+  the email you entered is invalid
+</div>
+{%endif%}
+{% if ssnExisits %}
+<div class="alert alert-warning" role="alert">
+  the ssn you entered already exisits
+</div>
+{%endif%}
     <h1>doctor Register</h1>
     <div class = "container">
         <form action="http://localhost:5000/adddoctor" method="POST">
